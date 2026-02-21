@@ -1,11 +1,11 @@
-# @zeroprooai/proof-badge
+# @zeroproofai/proof-badge
 
 React components for displaying and verifying ZK-TLS cryptographic proofs from the [Zero Proof](https://zeroproofai.com) attestation service.
 
 ## Installation
 
 ```bash
-npm install @zeroprooai/proof-badge
+npm install @zeroproofai/proof-badge
 ```
 
 ### Peer dependencies
@@ -20,7 +20,7 @@ npm install @zeroprooai/proof-badge
 ### 1. Wrap your app with `ProofsProvider`
 
 ```tsx
-import { ProofsProvider } from '@zeroprooai/proof-badge';
+import { ProofsProvider } from '@zeroproofai/proof-badge';
 
 function App() {
   return (
@@ -40,7 +40,7 @@ streams proof updates into context automatically.
 ### 2. Display proofs with `ProofBadge`
 
 ```tsx
-import { useProofs, ProofBadge } from '@zeroprooai/proof-badge';
+import { useProofs, ProofBadge } from '@zeroproofai/proof-badge';
 
 function ProofList() {
   const { proofs, fetchFullProof } = useProofs();
@@ -63,8 +63,8 @@ function ProofList() {
 ### 3. Show full proof details with `ProofModal`
 
 ```tsx
-import { ProofModal, useProofs } from '@zeroprooai/proof-badge';
-import type { FullProofData } from '@zeroprooai/proof-badge';
+import { ProofModal, useProofs } from '@zeroproofai/proof-badge';
+import type { FullProofData } from '@zeroproofai/proof-badge';
 
 function ProofViewer() {
   const { fetchFullProof } = useProofs();
