@@ -1,5 +1,5 @@
 {
-  "name": "@zeroproof/proof-ui",
+  "name": "@zeroprooai/proof-badge",
   "version": "0.1.0",
   "description": "React components for displaying and verifying ZK-TLS cryptographic proofs",
   "main": "dist/index.js",
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zero-Proof-AI/proof-ui.git"
+    "url": "git+https://github.com/Zero-Proof-AI/proof-badge.git"
   },
   "keywords": [
     "zeroproof",
