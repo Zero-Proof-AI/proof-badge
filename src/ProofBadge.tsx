@@ -14,6 +14,8 @@ const WORKFLOW_COLORS: Record<string, string> = {
   payment: '#fff5e6',
   booking: '#e6ffe6',
   'card-enrollment': '#fff0f5',
+  'instrument-identifiers': '#e8f4fd',
+  'payment-instruments': '#fff8e1',
 };
 
 const WORKFLOW_BORDERS: Record<string, string> = {
@@ -22,6 +24,8 @@ const WORKFLOW_BORDERS: Record<string, string> = {
   payment: '#f6ad55',
   booking: '#48bb78',
   'card-enrollment': '#ed64a6',
+  'instrument-identifiers': '#2b6cb0',
+  'payment-instruments': '#dd6b20',
 };
 
 const ProofBadge = React.memo(
