@@ -42,7 +42,7 @@ function sanitizeProofForDisplay(proof: unknown): unknown {
   return sanitized;
 }
 
-function truncateProofField(obj: unknown, maxLen = 200): unknown {
+function truncateProofField(obj: unknown, maxLen = 80): unknown {
   if (obj === null || typeof obj !== 'object') return obj;
   const result = { ...(obj as Record<string, unknown>) };
   if (typeof result['proof'] === 'string' && result['proof'].length > maxLen) {
