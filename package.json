@@ -1,6 +1,6 @@
 {
   "name": "@zeroproofai/proof-badge",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React components for displaying and verifying ZK-TLS cryptographic proofs",
   "main": "dist/index.js",
   "module": "dist/index.js",
