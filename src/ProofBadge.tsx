@@ -296,7 +296,9 @@ const ProofBadge = React.memo(
     );
   },
   (prevProps, nextProps) =>
-    JSON.stringify(prevProps.proof) === JSON.stringify(nextProps.proof) &&
+    prevProps.proof.proof_id === nextProps.proof.proof_id &&
+    prevProps.proof.verified === nextProps.proof.verified &&
+    prevProps.proof.onchain_compatible === nextProps.proof.onchain_compatible &&
     prevProps.index === nextProps.index,
 );
 

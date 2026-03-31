@@ -113,14 +113,15 @@ export const ProofsProvider: React.FC<ProofsProviderProps> = ({
       }
 
       try {
-        const res = await fetch(`${attestationServiceUrl}/proofs/verify/${proofId}`);
+        const res = await fetch(`${attestationServiceUrl}/proofs/${proofId}`);
         if (res.ok) {
           const data = await res.json();
-          if (data.proof) {
+          const proof = data.data?.proof ?? null;
+          if (proof) {
             setProofs((prev) =>
-              prev.map((p) => (p.proof_id === proofId ? data.proof : p)),
+              prev.map((p) => (p.proof_id === proofId ? proof : p)),
             );
-            return data.proof;
+            return proof;
           }
         }
       } catch {
