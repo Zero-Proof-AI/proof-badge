@@ -42,6 +42,15 @@ function sanitizeProofForDisplay(proof: unknown): unknown {
   return sanitized;
 }
 
+function truncateProofField(obj: unknown, maxLen = 200): unknown {
+  if (obj === null || typeof obj !== 'object') return obj;
+  const result = { ...(obj as Record<string, unknown>) };
+  if (typeof result['proof'] === 'string' && result['proof'].length > maxLen) {
+    result['proof'] = result['proof'].slice(0, maxLen) + '…[truncated]';
+  }
+  return result;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -306,7 +315,9 @@ const ProofModal: React.FC<ProofModalProps> = React.memo(
 
               <Pre style={{ marginTop: '0.5rem', maxHeight: '300px' }}>
                 {JSON.stringify(
-                  sanitizeProofForDisplay(selectedProof.proof?.onchainProof || selectedProof.proof),
+                  truncateProofField(
+                    sanitizeProofForDisplay(selectedProof.proof?.onchainProof || selectedProof.proof),
+                  ),
                   null,
                   2,
                 )}
