@@ -265,30 +265,8 @@ const ProofBadge = React.memo(
                 </ExpandedField>
               )}
 
-              {/* Explanation box */}
-              <div
-                style={{
-                  marginTop: '0.75rem',
-                  padding: '0.5rem',
-                  background: '#e6f0ff',
-                  borderRadius: '0.25rem',
-                  fontSize: '0.75rem',
-                  color: '#2c5282',
-                  lineHeight: '1.4',
-                }}
-              >
-                <strong>What this proves:</strong>
-                <div style={{ marginTop: '0.25rem' }}>
-                  ✓ An authenticated HTTPS request was made to the {proof.tool_name} endpoint
-                  <br />
-                  ✓ The response data is genuine and cryptographically verified (Zero-Knowledge TLS)
-                  <br />
-                  ✓ No intermediary could have tampered with the data
-                  <br />
-                  {proof.onchain_compatible &&
-                    '✓ This proof can be stored permanently on blockchain for audit trail'}
-                </div>
-              </div>
+              {/* Explanation box — content varies by proof type */}
+              <ProofExplanation proof={proof} />
             </div>
           </div>
         )}
@@ -305,6 +283,68 @@ const ProofBadge = React.memo(
 ProofBadge.displayName = 'ProofBadge';
 
 export default ProofBadge;
+
+// ---------------------------------------------------------------------------
+// Protocol-aware explanation box
+// ---------------------------------------------------------------------------
+
+function ProofExplanation({ proof }: { proof: CryptographicProof }) {
+  const isSP1 = proof.tool_name === 'attest';
+
+  const bgColor = isSP1 ? '#f0fdf4' : '#e6f0ff';
+  const textColor = isSP1 ? '#14532d' : '#2c5282';
+
+  // Format "send_intent" → "Send Intent", "exchange_intent" → "Exchange Intent", etc.
+  const intentLabel = proof.workflow_stage
+    ? proof.workflow_stage
+        .split('_')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    : 'User Intent';
+
+  return (
+    <div
+      style={{
+        marginTop: '0.75rem',
+        padding: '0.5rem',
+        background: bgColor,
+        borderRadius: '0.25rem',
+        fontSize: '0.75rem',
+        color: textColor,
+        lineHeight: '1.4',
+      }}
+    >
+      <strong>What this proves:</strong>
+      <div style={{ marginTop: '0.25rem' }}>
+        {isSP1 ? (
+          <>
+            ✓ A <strong>{intentLabel}</strong> was committed to and proven using SP1
+            zero-knowledge proof
+            <br />
+            ✓ The intent data has not been tampered with since proof generation
+            <br />
+            ✓ Proof verified using Groth16 — verifiable on-chain
+            <br />
+            {proof.onchain_compatible &&
+              '✓ This proof can be submitted to a smart contract for settlement'}
+          </>
+        ) : (
+          <>
+            ✓ An authenticated HTTPS request was made to the{' '}
+            <strong>{proof.tool_name}</strong> endpoint
+            <br />
+            ✓ The response data is genuine and cryptographically verified (ZK-TLS)
+            <br />
+            ✓ No intermediary could have tampered with the data
+            <br />
+            {proof.onchain_compatible &&
+              '✓ This proof can be stored permanently on blockchain for audit trail'}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Small helper used only inside expanded detail rows

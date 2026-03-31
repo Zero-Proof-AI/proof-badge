@@ -28,6 +28,21 @@ export interface ProofModalProps {
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Remove private circuit inputs before displaying proof data in the UI. */
+function sanitizeProofForDisplay(proof: unknown): unknown {
+  if (proof === null || typeof proof !== 'object') return proof;
+  const PRIVATE_KEYS = ['field_values', 'field_salts', 'private_inputs'];
+  const sanitized = { ...(proof as Record<string, unknown>) };
+  for (const key of PRIVATE_KEYS) {
+    delete sanitized[key];
+  }
+  return sanitized;
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -119,17 +134,19 @@ const ProofModal: React.FC<ProofModalProps> = React.memo(
             <Grid>
               <StatusCard ok={selectedProof.verified} okText="✓ Verified" failText="✗ Unverified">
                 {selectedProof.verified
-                  ? 'Cryptographically signed by Reclaim'
+                  ? selectedProof.verification_info
+                    ? `Verified — ${selectedProof.verification_info.protocol} (${selectedProof.verification_info.signature_algorithm})`
+                    : 'Cryptographically verified'
                   : 'Verification pending'}
               </StatusCard>
               <StatusCard
                 ok={selectedProof.onchain_compatible}
                 okText="✓ On-Chain Ready"
-                failText="✗ On-Chain Processing"
+                failText="✗ Processing"
               >
                 {selectedProof.onchain_compatible
                   ? 'Ready to submit to blockchain'
-                  : 'Converting for on-chain compatibility'}
+                  : 'Not yet on-chain compatible'}
               </StatusCard>
             </Grid>
           </Section>
@@ -143,16 +160,32 @@ const ProofModal: React.FC<ProofModalProps> = React.memo(
               </div>
               <div>
                 <strong style={{ color: '#4a5568', fontSize: '0.85rem' }}>Response:</strong>
-                <Pre>{JSON.stringify(selectedProof.response, null, 2)}</Pre>
+                <Pre>
+                  {JSON.stringify(
+                    selectedProof.display_response ?? selectedProof.response,
+                    null,
+                    2,
+                  )}
+                </Pre>
               </div>
             </Grid>
           </Section>
 
-          {/* ZK-TLS Proof */}
+          {/* Cryptographic Proof data */}
           <Section
             title={
               <>
-                ZK-TLS Proof{' '}
+                {selectedProof.verification_info?.protocol === 'SP1-Groth16'
+                  ? (() => {
+                      const stage = selectedProof.workflow_stage;
+                      const label = stage
+                        ? stage.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                        : 'User Intent';
+                      return `SP1 ZK Proof — ${label}`;
+                    })()
+                  : selectedProof.verification_info?.protocol === 'Reclaim'
+                  ? 'ZK-TLS Proof (Reclaim)'
+                  : 'Proof Data'}{' '}
                 {explorerContractUrl && (
                   <button
                     onClick={() => window.open(explorerContractUrl, '_blank')}
@@ -273,7 +306,7 @@ const ProofModal: React.FC<ProofModalProps> = React.memo(
 
               <Pre style={{ marginTop: '0.5rem', maxHeight: '300px' }}>
                 {JSON.stringify(
-                  selectedProof.proof?.onchainProof || selectedProof.proof,
+                  sanitizeProofForDisplay(selectedProof.proof?.onchainProof || selectedProof.proof),
                   null,
                   2,
                 )}
